@@ -1,15 +1,26 @@
+'use client';
+
+import { Header } from '@/components/header';
+import { MenuDisplay } from '@/components/menu-display';
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center font-sans">
-      <main className="flex w-full max-w-3xl flex-col items-center gap-8 px-6 py-16 text-center sm:items-start sm:text-left">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">
-            Iacofanos
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <div className="mb-12 text-center space-y-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground">
+            Premium Catering & Events
           </h1>
-          <p className="max-w-md text-lg text-muted-foreground">
-            To get started, send a prompt or modify this page directly.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover our exquisite menu curated for corporate gatherings, weddings, and special occasions
           </p>
         </div>
+
+        {/* Menu Display */}
+        <MenuDisplay />
       </main>
     </div>
   );
