@@ -28,6 +28,18 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const USE_MOCK_AUTH = !process.env.NEXT_PUBLIC_API_URL;
+
+// Generate a simple mock JWT token
+const generateMockToken = () => {
+  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = btoa(JSON.stringify({ 
+    sub: '1', 
+    email: 'preview@example.com',
+    iat: Math.floor(Date.now() / 1000)
+  }));
+  return `${header}.${payload}.signature`;
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -45,6 +57,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = useCallback(async (authToken: string) => {
     try {
+      if (USE_MOCK_AUTH) {
+        const email = localStorage.getItem('user_email') || 'preview@example.com';
+        setUser({
+          id: 1,
+          email,
+          first_name: 'Preview',
+          last_name: 'User',
+        });
+        return;
+      }
+
       const res = await fetch(`${API_URL}/auth/me`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -66,6 +89,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
+      if (USE_MOCK_AUTH) {
+        const mockToken = generateMockToken();
+        setToken(mockToken);
+        setUser({
+          id: 1,
+          email,
+          first_name: 'Preview',
+          last_name: 'User',
+        });
+        localStorage.setItem('auth_token', mockToken);
+        localStorage.setItem('user_email', email);
+        return;
+      }
+
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,6 +131,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
+      if (USE_MOCK_AUTH) {
+        const mockToken = generateMockToken();
+        setToken(mockToken);
+        setUser({
+          id: 1,
+          email,
+          first_name,
+          last_name,
+        });
+        localStorage.setItem('auth_token', mockToken);
+        localStorage.setItem('user_email', email);
+        return;
+      }
+
       const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
