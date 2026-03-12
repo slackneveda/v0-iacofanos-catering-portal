@@ -47,14 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem('auth_token');
-    if (savedToken) {
-      setToken(savedToken);
-      fetchUser(savedToken);
-    }
-  }, []);
-
   const fetchUser = useCallback(async (authToken: string) => {
     try {
       if (USE_MOCK_AUTH) {
@@ -84,6 +76,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Failed to fetch user:', err);
     }
   }, []);
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('auth_token');
+    if (savedToken) {
+      setToken(savedToken);
+      fetchUser(savedToken);
+    }
+  }, [fetchUser]);
 
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);

@@ -1,0 +1,7 @@
+{
+  "buildCommand": "next build",
+  "installCommand": "npm install || pnpm install || yarn install || bun install",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "nodeVersion": "20.x"
+}
