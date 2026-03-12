@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/lib/cart-context';
 import { useAuth } from '@/lib/auth-context';
@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Minus, Plus } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Trash2, Minus, Plus, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 import { api } from '@/lib/api-client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +24,23 @@ interface MenuItem {
 }
 
 export default function CartPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center py-12">
+            <p className="text-gray-500">Loading cart...</p>
+          </div>
+        </main>
+      </div>
+    }>
+      <CartContent />
+    </Suspense>
+  );
+}
+
+function CartContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { items, addItem, removeItem, updateQuantity, clear, total } = useCart();
@@ -104,13 +124,13 @@ export default function CartPage() {
 
   if (items.length === 0 && !menuItem) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center py-12">
-            <h1 className="text-3xl font-serif font-bold mb-4">Shopping Cart</h1>
-            <p className="text-muted-foreground mb-6">Your cart is empty</p>
-            <Button onClick={() => router.push('/')}>
+            <h1 className="text-3xl font-bold mb-4 text-gray-900">Shopping Cart</h1>
+            <p className="text-gray-500 mb-6">Your cart is empty</p>
+            <Button onClick={() => router.push('/')} className="bg-[#c8a85c] text-white hover:bg-[#b89a4e]">
               Continue Shopping
             </Button>
           </div>
@@ -120,11 +140,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold mb-8">Order Details</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900">Order Details</h1>
 
         <div className="grid md:grid-cols-3 gap-8">
           {/* Order Form */}
@@ -139,12 +159,35 @@ export default function CartPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Event Date *</label>
-                      <Input
-                        type="date"
-                        required
-                        value={formData.event_date}
-                        onChange={(e) => setFormData({...formData, event_date: e.target.value})}
-                      />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={`w-full justify-start text-left font-normal bg-white border-gray-300 hover:bg-gray-50 hover:text-gray-900 ${
+                              formData.event_date ? 'text-gray-900' : 'text-gray-400'
+                            }`}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4 text-[#c8a85c]" />
+                            {formData.event_date
+                              ? format(new Date(formData.event_date + 'T00:00:00'), 'PPP')
+                              : 'Pick a date'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-white border-gray-200" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={formData.event_date ? new Date(formData.event_date + 'T00:00:00') : undefined}
+                            onSelect={(date) =>
+                              setFormData({
+                                ...formData,
+                                event_date: date ? format(date, 'yyyy-MM-dd') : '',
+                              })
+                            }
+                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Event Time</label>
@@ -214,7 +257,7 @@ export default function CartPage() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg">
+                  <Button type="submit" className="w-full bg-[#c8a85c] text-white hover:bg-[#b89a4e] uppercase tracking-wider font-semibold" size="lg">
                     Place Order
                   </Button>
                 </form>

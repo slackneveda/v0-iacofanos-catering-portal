@@ -77,6 +77,10 @@ const MOCK_MENU_ITEMS = [
 
 const MOCK_CATEGORIES = ['Appetizers', 'Entrees', 'Desserts'];
 
+// In-memory store for mock orders (persists during the session)
+let mockOrders: any[] = [];
+let nextOrderId = 1;
+
 interface FetchOptions extends RequestInit {
   token?: string;
 }
@@ -87,7 +91,7 @@ export async function apiCall<T>(
 ): Promise<T> {
   // Use mock data for preview environment
   if (USE_MOCK_DATA) {
-    return getMockData(endpoint) as Promise<T>;
+    return getMockData(endpoint, options) as Promise<T>;
   }
 
   const { token, ...fetchOptions } = options;
@@ -117,20 +121,70 @@ export async function apiCall<T>(
   } catch (error) {
     // Fallback to mock data if API fails
     console.warn('[API] Falling back to mock data:', endpoint);
-    return getMockData(endpoint) as Promise<T>;
+    return getMockData(endpoint, options) as Promise<T>;
   }
 }
 
-function getMockData(endpoint: string): any {
+function getMockData(endpoint: string, options: FetchOptions = {}): any {
   if (endpoint.includes('/menu/categories')) {
     return MOCK_CATEGORIES;
+  }
+  const menuItemMatch = endpoint.match(/\/menu\/(\d+)$/);
+  if (menuItemMatch) {
+    const id = parseInt(menuItemMatch[1]);
+    return MOCK_MENU_ITEMS.find(item => item.id === id) || null;
   }
   if (endpoint.includes('/menu')) {
     return MOCK_MENU_ITEMS;
   }
-  if (endpoint.includes('/orders')) {
-    return [];
+
+  // Handle order creation (POST /orders)
+  const orderDetailMatch = endpoint.match(/\/orders\/(\d+)$/);
+  if (options.method === 'POST' && endpoint === '/orders') {
+    const body = options.body ? JSON.parse(options.body as string) : {};
+    const orderItems = (body.items || []).map((item: any) => {
+      const menuItem = MOCK_MENU_ITEMS.find(m => m.id === item.menu_item_id);
+      return {
+        menu_item_id: item.menu_item_id,
+        quantity: item.quantity,
+        name: menuItem?.name || 'Unknown Item',
+        price: menuItem?.price || 0,
+      };
+    });
+    const totalAmount = orderItems.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0
+    );
+    const newOrder = {
+      id: nextOrderId++,
+      status: 'pending',
+      total_amount: totalAmount,
+      event_date: body.event_date || '',
+      event_time: body.event_time || null,
+      event_type: body.event_type || '',
+      num_guests: body.num_guests || 0,
+      delivery_address: body.delivery_address || '',
+      delivery_city: body.delivery_city || '',
+      delivery_postal_code: body.delivery_postal_code || '',
+      special_requests: body.special_requests || '',
+      items: orderItems,
+      created_at: new Date().toISOString(),
+    };
+    mockOrders.push(newOrder);
+    return newOrder;
   }
+
+  // Handle order detail (GET /orders/:id)
+  if (orderDetailMatch) {
+    const id = parseInt(orderDetailMatch[1]);
+    return mockOrders.find(o => o.id === id) || null;
+  }
+
+  // Handle order list (GET /orders)
+  if (endpoint.includes('/orders')) {
+    return mockOrders;
+  }
+
   return null;
 }
 

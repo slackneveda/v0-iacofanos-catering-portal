@@ -35,12 +35,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Card className="w-full max-w-md bg-white border-gray-200 shadow-lg">
         <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl">Welcome Back</CardTitle>
-          <CardDescription>
-            Sign in to your Iacofanos account
+          <CardTitle className="text-3xl text-gray-900">Welcome Back</CardTitle>
+          <CardDescription className="text-gray-500">
+            Sign in to your Iacofano&apos;s account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -82,7 +82,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#c8a85c] text-white hover:bg-[#b89a4e] uppercase tracking-wider font-semibold"
               disabled={isLoading}
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
@@ -95,8 +95,8 @@ export default function LoginPage() {
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Don't have an account?
+                <span className="bg-white px-2 text-gray-500">
+                  Don&apos;t have an account?
                 </span>
               </div>
             </div>

@@ -67,11 +67,11 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-center min-h-96">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#c8a85c]" />
           </div>
         </main>
       </div>
@@ -80,12 +80,12 @@ export default function OrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center py-12">
-            <p className="text-destructive font-medium mb-4">{error}</p>
-            <Button onClick={() => window.location.reload()}>
+            <p className="text-red-500 font-medium mb-4">{error}</p>
+            <Button onClick={() => window.location.reload()} className="bg-[#c8a85c] text-white hover:bg-[#b89a4e]">
               Try Again
             </Button>
           </div>
@@ -95,13 +95,13 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold mb-2">My Orders</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">My Orders</h1>
+          <p className="text-gray-500">
             Track and manage your catering orders
           </p>
         </div>

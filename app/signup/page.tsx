@@ -48,12 +48,12 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Card className="w-full max-w-md bg-white border-gray-200 shadow-lg">
         <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl">Create Account</CardTitle>
-          <CardDescription>
-            Join Iacofanos for premium catering services
+          <CardTitle className="text-3xl text-gray-900">Create Account</CardTitle>
+          <CardDescription className="text-gray-500">
+            Join Iacofano&apos;s for premium catering services
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -140,7 +140,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#c8a85c] text-white hover:bg-[#b89a4e] uppercase tracking-wider font-semibold"
               disabled={isLoading}
             >
               {isLoading ? 'Creating account...' : 'Create Account'}
@@ -153,7 +153,7 @@ export default function SignupPage() {
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
+                <span className="bg-white px-2 text-gray-500">
                   Already have an account?
                 </span>
               </div>

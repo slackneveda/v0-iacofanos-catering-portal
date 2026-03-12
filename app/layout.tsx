@@ -9,25 +9,16 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Iacofanos - Premium Catering & Event Services',
-  description: 'Premium catering and event services for corporate events, weddings, and special occasions',
+  title: "Iacofano's - Premium Catering & Event Services",
+  description: "Premium catering and event services for corporate events, weddings, inflight dining, and special occasions. Open 24 hours.",
   generator: 'v0.app',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/logo.png',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/logo.png',
   },
 }
 
